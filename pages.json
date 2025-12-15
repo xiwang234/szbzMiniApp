@@ -1,0 +1,48 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "生辰八字",
+        "navigationBarBackgroundColor": "#C8102E",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/info/info",
+      "style": {
+        "navigationBarTitleText": "八字详解",
+        "navigationBarBackgroundColor": "#C8102E",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/payment/payment",
+      "style": {
+        "navigationBarTitleText": "解锁完整报告",
+        "navigationBarBackgroundColor": "#C8102E",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/result/result",
+      "style": {
+        "navigationBarTitleText": "完整报告",
+        "navigationBarBackgroundColor": "#C8102E",
+        "navigationBarTextStyle": "white"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "生辰八字",
+    "navigationBarBackgroundColor": "#C8102E",
+    "backgroundColor": "#FFF5F5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#C8102E",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black"
+  }
+}

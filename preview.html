@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>生辰八字 - 首页预览</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+        'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, #FFF5F5 0%, #FFE8E8 100%);
+      min-height: 100vh;
+      padding-bottom: 30px;
+    }
+
+    .page-container {
+      max-width: 750px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* 顶部装饰背景 */
+    .header-decoration {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      margin-bottom: -50px;
+    }
+
+    .header-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.3;
+    }
+
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(200, 16, 46, 0.6) 0%, rgba(255, 245, 245, 0.9) 100%);
+    }
+
+    /* 主标题 */
+    .main-title {
+      position: relative;
+      text-align: center;
+      padding: 30px 20px 20px;
+      z-index: 10;
+    }
+
+    .title-icon {
+      font-size: 40px;
+      color: #C8102E;
+      margin-bottom: 10px;
+      animation: rotate 4s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .title-text {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      color: #C8102E;
+      margin-bottom: 5px;
+      text-shadow: 0 1px 4px rgba(200, 16, 46, 0.2);
+    }
+
+    .title-subtitle {
+      display: block;
+      font-size: 14px;
+      color: #E63946;
+      font-weight: 400;
+    }
+
+    /* 表单卡片 */
+    .form-card {
+      margin: 0 15px;
+      background: white;
+      border-radius: 16px;
+      padding: 25px 20px;
+      box-shadow: 0 4px 16px rgba(200, 16, 46, 0.12);
+    }
+
+    /* 表单项 */
+    .form-item {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .label-icon {
+      color: #C8102E;
+      margin-right: 6px;
+      font-size: 16px;
+    }
+
+    /* 性别选择 */
+    .gender-section {
+      margin-bottom: 25px;
+    }
+
+    .gender-tabs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .gender-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
+      background: #FFF5F5;
+      border: 1.5px solid #FFE8E8;
+      border-radius: 10px;
+      font-size: 16px;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .gender-tab:hover {
+      border-color: #FFD0D0;
+    }
+
+    .gender-tab.active.male {
+      background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
+      border-color: #4A90E2;
+      color: white;
+      box-shadow: 0 3px 10px rgba(74, 144, 226, 0.3);
+      transform: scale(1.02);
+    }
+
+    .gender-tab.active.female {
+      background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+      border-color: #FF6B9D;
+      color: white;
+      box-shadow: 0 3px 10px rgba(255, 107, 157, 0.3);
+      transform: scale(1.02);
+    }
+
+    .tab-icon {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    /* 选择器包装 */
+    .picker-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 44px;
+      padding: 0 15px;
+      background: #FFF5F5;
+      border: 1px solid #FFE8E8;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .picker-wrapper:hover {
+      border-color: #C8102E;
+      background: #FFE8E8;
+    }
+
+    .picker-value {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .picker-arrow {
+      font-size: 14px;
+      color: #C8102E;
+    }
+
+    select {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* 提交按钮 */
+    .submit-btn {
+      width: 100%;
+      height: 48px;
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #E63946 0%, #C8102E 100%);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(230, 57, 70, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 6px rgba(230, 57, 70, 0.4);
+    }
+
+    .btn-icon {
+      margin-right: 6px;
+      font-size: 16px;
+    }
+
+    /* 底部装饰 */
+    .footer-decoration {
+      text-align: center;
+      margin-top: 30px;
+      padding: 0 20px;
+    }
+
+    .decoration-text {
+      font-size: 12px;
+      color: #E63946;
+      opacity: 0.6;
+    }
+
+    /* 加载提示 */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading-overlay.show {
+      display: flex;
+    }
+
+    .loading-content {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #FFE8E8;
+      border-top-color: #C8102E;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    /* 响应式 */
+    @media (max-width: 480px) {
+      .form-card {
+        margin: 0 10px;
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <!-- 顶部装饰背景 -->
+    <div class="header-decoration">
+      <img 
+        class="header-bg" 
+        src="https://images.unsplash.com/photo-1518176258769-f227c798150e?w=800&q=80" 
+        alt="背景"
+      />
+      <div class="header-overlay"></div>
+    </div>
+
+    <!-- 主标题 -->
+    <div class="main-title">
+      <div class="title-icon">
+        <i class="fa-solid fa-yin-yang"></i>
+      </div>
+    </div>
+
+    <!-- 表单卡片 -->
+    <div class="form-card">
+      <!-- 性别选择 -->
+      <div class="form-item gender-section">
+        <div class="form-label">
+          <i class="fa-solid fa-venus-mars label-icon"></i>
+          <span>性别</span>
+        </div>
+        <div class="gender-tabs">
+          <div class="gender-tab active male" onclick="selectGender('male', this)">
+            <i class="fa-solid fa-mars tab-icon"></i>
+            <span>男</span>
+          </div>
+          <div class="gender-tab female" onclick="selectGender('female', this)">
+            <i class="fa-solid fa-venus tab-icon"></i>
+            <span>女</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 出生年份 -->
+      <div class="form-item">
+        <div class="form-label">
+          <i class="fa-solid fa-calendar-days label-icon"></i>
+          <span>出生年份</span>
+        </div>
+        <div class="picker-wrapper">
+          <span class="picker-value" id="yearValue">2014年</span>
+          <i class="fa-solid fa-chevron-down picker-arrow"></i>
+          <select id="yearSelect" onchange="updateYear(this.value)"></select>
+        </div>
+      </div>
+
+      <!-- 出生月份 -->
+      <div class="form-item">
+        <div class="form-label">
+          <i class="fa-regular fa-calendar label-icon"></i>
+          <span>出生月份</span>
+        </div>
+        <div class="picker-wrapper">
+          <span class="picker-value" id="monthValue">1月</span>
+          <i class="fa-solid fa-chevron-down picker-arrow"></i>
+          <select id="monthSelect" onchange="updateMonth(this.value)"></select>
+        </div>
+      </div>
+
+      <!-- 出生日期 -->
+      <div class="form-item">
+        <div class="form-label">
+          <i class="fa-regular fa-calendar-check label-icon"></i>
+          <span>出生日期</span>
+        </div>
+        <div class="picker-wrapper">
+          <span class="picker-value" id="dayValue">1日</span>
+          <i class="fa-solid fa-chevron-down picker-arrow"></i>
+          <select id="daySelect" onchange="updateDay(this.value)"></select>
+        </div>
+      </div>
+
+      <!-- 出生时辰 -->
+      <div class="form-item">
+        <div class="form-label">
+          <i class="fa-regular fa-clock label-icon"></i>
+          <span>出生时辰</span>
+        </div>
+        <div class="picker-wrapper">
+          <span class="picker-value" id="timeValue">子时 (23:00-00:59)</span>
+          <i class="fa-solid fa-chevron-down picker-arrow"></i>
+          <select id="timeSelect" onchange="updateTime(this.value)"></select>
+        </div>
+      </div>
+
+      <!-- 提交按钮 -->
+      <button class="submit-btn" onclick="handleSubmit()">
+        照见本心
+      </button>
+    </div>
+  </div>
+
+  <!-- 加载提示 -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">正在测算...</div>
+    </div>
+  </div>
+
+  <script>
+    // 表单数据
+    let formData = {
+      gender: 'male',
+      year: 2014,
+      month: 1,
+      day: 1,
+      time: '子时',
+      timeLabel: '子时 (23:00-00:59)'
+    };
+
+    // 时辰数据
+    const timeList = [
+      { value: '子时', label: '子时 (23:00-00:59)' },
+      { value: '丑时', label: '丑时 (01:00-02:59)' },
+      { value: '寅时', label: '寅时 (03:00-04:59)' },
+      { value: '卯时', label: '卯时 (05:00-06:59)' },
+      { value: '辰时', label: '辰时 (07:00-08:59)' },
+      { value: '巳时', label: '巳时 (09:00-10:59)' },
+      { value: '午时', label: '午时 (11:00-12:59)' },
+      { value: '未时', label: '未时 (13:00-14:59)' },
+      { value: '申时', label: '申时 (15:00-16:59)' },
+      { value: '酉时', label: '酉时 (17:00-18:59)' },
+      { value: '戌时', label: '戌时 (19:00-20:59)' },
+      { value: '亥时', label: '亥时 (21:00-22:59)' }
+    ];
+
+    // 初始化年份列表 (1950-2099)
+    function initYearList() {
+      const yearSelect = document.getElementById('yearSelect');
+      for (let i = 1950; i <= 2099; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = i + '年';
+        if (i === 2014) option.selected = true;
+        yearSelect.appendChild(option);
+      }
+    }
+
+    // 初始化月份列表
+    function initMonthList() {
+      const monthSelect = document.getElementById('monthSelect');
+      for (let i = 1; i <= 12; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = i + '月';
+        if (i === 1) option.selected = true;
+        monthSelect.appendChild(option);
+      }
+    }
+
+    // 初始化日期列表
+    function initDayList() {
+      const daySelect = document.getElementById('daySelect');
+      daySelect.innerHTML = '';
+      
+      const year = formData.year;
+      const month = formData.month;
+      let maxDay = 31;
+      
+      // 根据月份确定最大天数
+      if (month === 2) {
+        // 判断闰年
+        if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
+          maxDay = 29;
+        } else {
+          maxDay = 28;
+        }
+      } else if ([4, 6, 9, 11].includes(month)) {
+        maxDay = 30;
+      }
+      
+      for (let i = 1; i <= maxDay; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = i + '日';
+        if (i === formData.day && i <= maxDay) option.selected = true;
+        daySelect.appendChild(option);
+      }
+      
+      // 如果当前选择的日期超过了最大天数，则重置
+      if (formData.day > maxDay) {
+        formData.day = maxDay;
+        document.getElementById('dayValue').textContent = maxDay + '日';
+      }
+    }
+
+    // 初始化时辰列表
+    function initTimeList() {
+      const timeSelect = document.getElementById('timeSelect');
+      timeList.forEach((time, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.text = time.label;
+        if (index === 0) option.selected = true;
+        timeSelect.appendChild(option);
+      });
+    }
+
+    // 选择性别
+    function selectGender(gender, element) {
+      formData.gender = gender;
+      document.querySelectorAll('.gender-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      element.classList.add('active');
+    }
+
+    // 更新年份
+    function updateYear(year) {
+      formData.year = parseInt(year);
+      document.getElementById('yearValue').textContent = year + '年';
+      initDayList(); // 重新计算日期
+    }
+
+    // 更新月份
+    function updateMonth(month) {
+      formData.month = parseInt(month);
+      document.getElementById('monthValue').textContent = month + '月';
+      initDayList(); // 重新计算日期
+    }
+
+    // 更新日期
+    function updateDay(day) {
+      formData.day = parseInt(day);
+      document.getElementById('dayValue').textContent = day + '日';
+    }
+
+    // 更新时辰
+    function updateTime(index) {
+      const selectedTime = timeList[index];
+      formData.time = selectedTime.value;
+      formData.timeLabel = selectedTime.label;
+      document.getElementById('timeValue').textContent = selectedTime.label;
+    }
+
+    // 提交表单
+    function handleSubmit() {
+      // 显示加载
+      document.getElementById('loadingOverlay').classList.add('show');
+      
+      // 模拟计算延迟
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.remove('show');
+        
+        // 显示结果
+        alert(`测算完成！\n\n性别：${formData.gender === 'male' ? '男' : '女'}\n出生日期：${formData.year}年${formData.month}月${formData.day}日\n出生时辰：${formData.timeLabel}\n\n提示：在真实小程序中，这里会跳转到信息展示页面。`);
+      }, 1500);
+    }
+
+    // 页面加载完成后初始化
+    window.onload = function() {
+      initYearList();
+      initMonthList();
+      initDayList();
+      initTimeList();
+    };
+  </script>
+</body>
+</html>

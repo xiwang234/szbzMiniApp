@@ -1,0 +1,30 @@
+{
+  "name": "szbz-miniapp",
+  "version": "1.0.0",
+  "description": "生辰八字多端小程序",
+  "main": "main.js",
+  "scripts": {
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "dev:mp-toutiao": "uni -p mp-toutiao",
+    "build:mp-toutiao": "uni build -p mp-toutiao",
+    "dev:h5": "uni -p h5",
+    "build:h5": "uni build -p h5",
+    "dev:app": "uni -p app",
+    "build:app": "uni build -p app"
+  },
+  "dependencies": {
+    "vue": "^3.2.45",
+    "@dcloudio/uni-app": "^3.0.0-alpha-3090920230324001",
+    "@dcloudio/uni-app-plus": "^3.0.0-alpha-3090920230324001",
+    "@dcloudio/uni-h5": "^3.0.0-alpha-3090920230324001",
+    "@dcloudio/uni-mp-weixin": "^3.0.0-alpha-3090920230324001",
+    "@dcloudio/uni-mp-toutiao": "^3.0.0-alpha-3090920230324001"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-cli-shared": "^3.0.0-alpha-3090920230324001",
+    "@dcloudio/vite-plugin-uni": "^3.0.0-alpha-3090920230324001",
+    "vite": "^4.0.0",
+    "sass": "^1.56.1"
+  }
+}
