@@ -1,0 +1,5 @@
+<!--pages/result/result.wxml-->
+<view class="container">
+  <view class="title">完整报告</view>
+  <view class="text-secondary">开发中...</view>
+</view>

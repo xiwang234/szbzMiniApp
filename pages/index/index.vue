@@ -1,22 +1,5 @@
 <template>
   <view class="page-container">
-    <!-- 顶部装饰背景 -->
-    <view class="header-decoration">
-      <image 
-        class="header-bg" 
-        src="https://images.unsplash.com/photo-1518176258769-f227c798150e?w=800&q=80" 
-        mode="aspectFill"
-      />
-      <view class="header-overlay"></view>
-    </view>
-
-    <!-- 主标题 -->
-    <view class="main-title">
-      <view class="title-icon">
-        <text class="fa-solid fa-yin-yang"></text>
-      </view>
-    </view>
-
     <!-- 表单卡片 -->
     <view class="form-card">
       <!-- 性别选择 -->
@@ -151,10 +134,10 @@ export default {
       formData: {
         gender: 'male',
         year: 2014,
-        month: 1,
-        day: 1,
-        time: '子时',
-        timeLabel: '子时 (23:00-00:59)'
+        month: 6,
+        day: 15,
+        time: '午时',
+        timeLabel: '午时 (11:00-12:59)'
       },
       showPicker: {
         year: false,
@@ -180,9 +163,9 @@ export default {
         { value: '亥时', label: '亥时 (21:00-22:59)', range: '21:00-22:59' }
       ],
       yearIndex: 64,
-      monthIndex: 0,
-      dayIndex: 0,
-      timeIndex: 0
+      monthIndex: 5,
+      dayIndex: 14,
+      timeIndex: 6
     }
   },
   onLoad() {
@@ -342,67 +325,11 @@ export default {
 <style lang="scss" scoped>
 .page-container {
   min-height: 100vh;
-  padding-bottom: 60rpx;
-  position: relative;
-}
-
-/* 顶部装饰背景 */
-.header-decoration {
-  position: relative;
-  height: 400rpx;
-  overflow: hidden;
-  margin-bottom: -100rpx;
-}
-
-.header-bg {
-  width: 100%;
-  height: 100%;
-  opacity: 0.3;
-}
-
-.header-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(200, 16, 46, 0.6) 0%, rgba(255, 245, 245, 0.9) 100%);
-}
-
-/* 主标题 */
-.main-title {
-  position: relative;
-  text-align: center;
-  padding: 60rpx 40rpx 40rpx;
-  z-index: 10;
-}
-
-.title-icon {
-  font-size: 80rpx;
-  color: #C8102E;
-  margin-bottom: 20rpx;
-  animation: rotate 4s linear infinite;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.title-text {
-  display: block;
-  font-size: 48rpx;
-  font-weight: 700;
-  color: #C8102E;
-  margin-bottom: 10rpx;
-  text-shadow: 0 2rpx 8rpx rgba(200, 16, 46, 0.2);
-}
-
-.title-subtitle {
-  display: block;
-  font-size: 28rpx;
-  color: #E63946;
-  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+  box-sizing: border-box;
 }
 
 /* 表单卡片 */
@@ -412,6 +339,8 @@ export default {
   border-radius: 32rpx;
   padding: 50rpx 40rpx;
   box-shadow: 0 8rpx 32rpx rgba(200, 16, 46, 0.12);
+  width: 690rpx;
+  max-width: 100%;
 }
 
 /* 表单项 */

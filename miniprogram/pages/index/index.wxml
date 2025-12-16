@@ -1,0 +1,100 @@
+<!--pages/index/index.wxml-->
+<view class="page-container">
+  <!-- 表单卡片 -->
+  <view class="form-card">
+    <!-- 性别选择 -->
+    <view class="form-item gender-section">
+      <view class="form-label">
+        <text class="label-icon">⚤</text>
+        <text>性别</text>
+      </view>
+      <view class="gender-tabs">
+        <view 
+          class="gender-tab male {{gender === 'male' ? 'active' : ''}}"
+          bindtap="selectGender"
+          data-gender="male"
+        >
+          <text class="tab-icon">♂</text>
+          <text>男</text>
+        </view>
+        <view 
+          class="gender-tab female {{gender === 'female' ? 'active' : ''}}"
+          bindtap="selectGender"
+          data-gender="female"
+        >
+          <text class="tab-icon">♀</text>
+          <text>女</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 出生年份 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-icon">📅</text>
+        <text>出生年份</text>
+      </view>
+      <view class="picker-wrapper">
+        <picker mode="selector" range="{{yearList}}" value="{{yearIndex}}" bindchange="onYearChange">
+          <view class="picker-display">
+            <text class="picker-value">{{year}}年</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 出生月份 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-icon">📆</text>
+        <text>出生月份</text>
+      </view>
+      <view class="picker-wrapper">
+        <picker mode="selector" range="{{monthList}}" value="{{monthIndex}}" bindchange="onMonthChange">
+          <view class="picker-display">
+            <text class="picker-value">{{month}}月</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 出生日期 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-icon">✓</text>
+        <text>出生日期</text>
+      </view>
+      <view class="picker-wrapper">
+        <picker mode="selector" range="{{dayList}}" value="{{dayIndex}}" bindchange="onDayChange">
+          <view class="picker-display">
+            <text class="picker-value">{{day}}日</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 出生时辰 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-icon">🕐</text>
+        <text>出生时辰</text>
+      </view>
+      <view class="picker-wrapper">
+        <picker mode="selector" range="{{timeList}}" range-key="label" value="{{timeIndex}}" bindchange="onTimeChange">
+          <view class="picker-display">
+            <text class="picker-value">{{timeLabel}}</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <button class="submit-btn" bindtap="handleSubmit">
+      照见本心
+    </button>
+  </view>
+</view>

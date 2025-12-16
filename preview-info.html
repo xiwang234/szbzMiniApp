@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>信息展示页 - 预览</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+        'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, #FFF5F5 0%, #FFE8E8 100%);
+      min-height: 100vh;
+    }
+
+    .info-page {
+      max-width: 750px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* ========== 信息展示区 ========== */
+    .info-section {
+      padding: 20px 15px;
+    }
+
+    /* 分析内容 - 纯文本 */
+    .analysis-content {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(200, 16, 46, 0.08);
+    }
+
+    .content-text {
+      font-size: 15px;
+      line-height: 25px;
+      color: #333;
+      text-align: justify;
+      white-space: pre-wrap;
+    }
+
+    /* ========== 付费选择区 ========== */
+    .payment-section {
+      padding: 20px 15px 30px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* Tab 切换 */
+    .plan-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .plan-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 70px;
+      background: #FFF5F5;
+      border: 2px solid #FFE8E8;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .plan-tab.active {
+      background: linear-gradient(135deg, #E63946 0%, #C8102E 100%);
+      border-color: #C8102E;
+      box-shadow: 0 3px 10px rgba(200, 16, 46, 0.3);
+      transform: scale(1.05);
+    }
+
+    .tab-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .plan-tab.active .tab-name {
+      color: white;
+    }
+
+    .tab-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #C8102E;
+    }
+
+    .plan-tab.active .tab-price {
+      color: white;
+    }
+
+    /* 支付按钮 */
+    .pay-button {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, #E63946 0%, #C8102E 100%);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+      cursor: pointer;
+    }
+
+    .pay-button:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+  <div class="info-page">
+    <!-- 信息展示区 -->
+    <div class="info-section">
+      <div class="analysis-content">
+        <div class="content-text">【基本信息】
+性别：男
+出生时间：2014年6月15日 午时
+
+【生辰八字】
+您的生辰八字为：甲午年 庚午月 戊申日 壬午时
+
+【命理分析】
+八字中日主戊土生于午月，正值火旺土燥之时。年柱甲午，木火相生，天干透甲木为正官，地支藏丙火丁火，食神伤官并见。月柱庚午，金火相克，庚金为伤官，但午火克制庚金，伤官受制。日柱戊申，戊土坐申金，申金为食神，为泄秀之地。时柱壬午，水火既济，壬水为正财，午火为印绶。
+
+【五行分析】
+五行属性：木1 火4 土2 金2 水1
+命局五行火旺，需要水来调候，金来泄秀。八字喜金水，忌木火。土为中性。
+
+【性格特征】
+您为人忠厚老实，做事稳重踏实，有责任心。具有很强的包容心和同情心，乐于助人。思维灵活，善于变通，但有时容易优柔寡断。重视传统，尊重长辈，孝顺父母。在工作中认真负责，一丝不苟，深得领导和同事的信任。
+
+【事业运势】
+事业方面，您适合从事稳定性较强的工作，如公务员、教师、会计、金融等行业。工作中踏实肯干，能够得到上级的赏识和提拔。中年以后事业运势逐渐提升，有望担任领导职务。建议把握机会，稳扎稳打，切忌急功近利。
+
+【财运分析】
+财运方面，正财运较旺，工资收入稳定。但偏财运一般，不宜进行高风险投资。建议理性理财，稳健投资，积少成多。中年以后财运逐渐好转，有望积累一定的财富。需要注意的是，不要轻信他人，谨防上当受骗。
+
+【感情婚姻】
+感情运势较为平稳，男命重情重义，对待感情认真负责。早年感情发展较慢，需要耐心等待缘分。中年以后感情运势转好，有望遇到合适的伴侣。婚后夫妻感情和睦，家庭幸福美满。建议多沟通交流，相互理解包容。
+
+【健康状况】
+健康方面需要注意脾胃和心血管系统。由于八字火旺，容易出现上火、口腔溃疡等症状。建议饮食清淡，多吃蔬菜水果，少吃辛辣刺激性食物。适当运动，保持良好的作息习惯。定期体检，预防疾病。
+
+【开运建议】
+1. 吉祥方位：西方、北方
+2. 吉祥颜色：白色、黑色、金色
+3. 幸运数字：4、9、1、6
+4. 适宜职业：金融、会计、教育、公务员
+5. 佩戴饰品：金银首饰、水晶玉石
+
+【总体评价】
+整体来看，您的命局中正印、正官、正财俱全，属于正格命局，为人正直，品行端正。虽然早年运势平平，但中年以后渐入佳境，晚年运势更佳。建议踏实做事，诚信待人，积善行德，定能福寿安康，事业有成。
+
+以上分析仅供参考，详细内容请解锁完整报告查看。</div>
+      </div>
+    </div>
+
+    <!-- 付费选择区 -->
+    <div class="payment-section">
+      <div class="section-title">选择套餐</div>
+      
+      <!-- Tab 切换 -->
+      <div class="plan-tabs">
+        <div class="plan-tab active" onclick="selectPlan(this, 'year')">
+          <div class="tab-name">一年</div>
+          <div class="tab-price">¥99</div>
+        </div>
+        <div class="plan-tab" onclick="selectPlan(this, 'three-year')">
+          <div class="tab-name">三年</div>
+          <div class="tab-price">¥199</div>
+        </div>
+      </div>
+
+      <!-- 支付按钮 -->
+      <button class="pay-button" onclick="handlePayment()">
+        立即解锁完整报告
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let selectedPlan = 'year';
+
+    // 选择套餐
+    function selectPlan(element, plan) {
+      selectedPlan = plan;
+      
+      // 移除所有active类
+      document.querySelectorAll('.plan-tab').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // 添加active类到当前元素
+      element.classList.add('active');
+    }
+
+    // 处理支付
+    function handlePayment() {
+      const planInfo = {
+        year: { name: '一年套餐', price: 99 },
+        'three-year': { name: '三年套餐', price: 199 }
+      };
+      
+      const selected = planInfo[selectedPlan];
+      
+      if (confirm(`确认支付 ${selected.name}，金额：¥${selected.price}元？`)) {
+        alert(`跳转到支付页面\n套餐：${selected.name}\n金额：¥${selected.price}元`);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<!--pages/payment/payment.wxml-->
+<view class="container">
+  <view class="title">支付页</view>
+  <view class="text-secondary">开发中...</view>
+</view>
