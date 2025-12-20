@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生辰八字小程序 - 页面预览</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #FFF5F5 0%, #FFE5E5 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .phone-frame {
+      width: 375px;
+      height: 667px;
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .status-bar {
+      height: 44px;
+      background: #C8102E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .page-container {
+      height: calc(100% - 44px);
+      background: linear-gradient(135deg, #FFF5F5 0%, #FFE5E5 100%);
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .form-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(200, 16, 46, 0.1);
+    }
+
+    .form-item {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .label-icon {
+      margin-right: 8px;
+      font-size: 18px;
+    }
+
+    .gender-section .gender-tabs {
+      display: flex;
+      gap: 12px;
+    }
+
+    .gender-tab {
+      flex: 1;
+      height: 50px;
+      border-radius: 12px;
+      border: 2px solid #E0E0E0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .gender-tab.male {
+      color: #666;
+    }
+
+    .gender-tab.male.active {
+      background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+      border-color: #4A90E2;
+      color: white;
+      box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+
+    .gender-tab.female {
+      color: #666;
+    }
+
+    .gender-tab.female.active {
+      background: linear-gradient(135deg, #FF6B9D 0%, #E85A8F 100%);
+      border-color: #FF6B9D;
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+    }
+
+    .tab-icon {
+      font-size: 20px;
+    }
+
+    .picker-wrapper {
+      background: #F8F8F8;
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .picker-wrapper:hover {
+      background: #F0F0F0;
+    }
+
+    .picker-display {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .picker-value {
+      font-size: 15px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .picker-arrow {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(135deg, #C8102E 0%, #A00D26 100%);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 32px;
+      box-shadow: 0 6px 20px rgba(200, 16, 46, 0.3);
+      transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(200, 16, 46, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* 模拟加载页面 */
+    .info-page {
+      display: none;
+      height: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, #FFF5F5 0%, #FFE5E5 100%);
+    }
+
+    .info-page.show {
+      display: block;
+    }
+
+    .loading-box {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(200, 16, 46, 0.1);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #C8102E;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .console-panel {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 400px;
+      max-height: 300px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .console-title {
+      color: #4ec9b0;
+      font-weight: bold;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #333;
+    }
+
+    .console-log {
+      margin: 4px 0;
+      padding: 4px;
+      border-left: 3px solid #4ec9b0;
+      padding-left: 8px;
+    }
+
+    .console-error {
+      border-left-color: #f48771;
+      color: #f48771;
+    }
+
+    .console-success {
+      border-left-color: #4ec9b0;
+      color: #4ec9b0;
+    }
+
+    .instruction {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      max-width: 350px;
+    }
+
+    .instruction h3 {
+      margin-bottom: 12px;
+      color: #C8102E;
+      font-size: 16px;
+    }
+
+    .instruction p {
+      margin-bottom: 8px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .instruction .step {
+      margin-left: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="instruction">
+    <h3>📱 页面预览说明</h3>
+    <p><strong>当前展示：</strong>首页表单</p>
+    <p class="step">1️⃣ 查看页面布局和样式</p>
+    <p class="step">2️⃣ 点击"照见本心"按钮</p>
+    <p class="step">3️⃣ 观察右下角控制台日志</p>
+    <p class="step">4️⃣ 页面会跳转到加载状态</p>
+    <p style="margin-top: 12px; color: #C8102E; font-weight: bold;">
+      ⚠️ 实际接口调用需在微信开发者工具中测试
+    </p>
+  </div>
+
+  <div class="phone-frame">
+    <div class="status-bar">生辰八字</div>
+    
+    <!-- 首页 -->
+    <div class="page-container" id="indexPage">
+      <div class="form-card">
+        <!-- 性别选择 -->
+        <div class="form-item gender-section">
+          <div class="form-label">
+            <span class="label-icon">⚤</span>
+            <span>性别</span>
+          </div>
+          <div class="gender-tabs">
+            <div class="gender-tab male active" id="maleTab" onclick="selectGender('male')">
+              <span class="tab-icon">♂</span>
+              <span>男</span>
+            </div>
+            <div class="gender-tab female" id="femaleTab" onclick="selectGender('female')">
+              <span class="tab-icon">♀</span>
+              <span>女</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 出生年份 -->
+        <div class="form-item">
+          <div class="form-label">
+            <span class="label-icon">📅</span>
+            <span>出生年份</span>
+          </div>
+          <div class="picker-wrapper">
+            <div class="picker-display">
+              <span class="picker-value" id="yearValue">2014年</span>
+              <span class="picker-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 出生月份 -->
+        <div class="form-item">
+          <div class="form-label">
+            <span class="label-icon">📆</span>
+            <span>出生月份</span>
+          </div>
+          <div class="picker-wrapper">
+            <div class="picker-display">
+              <span class="picker-value" id="monthValue">6月</span>
+              <span class="picker-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 出生日期 -->
+        <div class="form-item">
+          <div class="form-label">
+            <span class="label-icon">✓</span>
+            <span>出生日期</span>
+          </div>
+          <div class="picker-wrapper">
+            <div class="picker-display">
+              <span class="picker-value" id="dayValue">15日</span>
+              <span class="picker-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 出生时辰 -->
+        <div class="form-item">
+          <div class="form-label">
+            <span class="label-icon">🕐</span>
+            <span>出生时辰</span>
+          </div>
+          <div class="picker-wrapper">
+            <div class="picker-display">
+              <span class="picker-value" id="timeValue">午时 (11:00-12:59)</span>
+              <span class="picker-arrow">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 提交按钮 -->
+        <button class="submit-btn" onclick="handleSubmit()">
+          照见本心
+        </button>
+      </div>
+    </div>
+
+    <!-- 信息展示页 -->
+    <div class="info-page" id="infoPage">
+      <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在分析中...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="console-panel" id="console">
+    <div class="console-title">📊 控制台日志</div>
+    <div id="consoleContent">
+      <div class="console-log">等待操作...</div>
+    </div>
+  </div>
+
+  <script>
+    let gender = 'male';
+    let currentData = {
+      gender: 'male',
+      year: 2014,
+      month: 6,
+      day: 15,
+      time: '午时',
+      hour: 11
+    };
+
+    function log(message, type = 'log') {
+      const consoleContent = document.getElementById('consoleContent');
+      const logDiv = document.createElement('div');
+      logDiv.className = `console-${type}`;
+      logDiv.textContent = message;
+      consoleContent.appendChild(logDiv);
+      consoleContent.scrollTop = consoleContent.scrollHeight;
+    }
+
+    function selectGender(g) {
+      gender = g;
+      currentData.gender = g;
+      
+      document.getElementById('maleTab').classList.toggle('active', g === 'male');
+      document.getElementById('femaleTab').classList.toggle('active', g === 'female');
+      
+      log(`选择性别: ${g === 'male' ? '男' : '女'}`);
+    }
+
+    function convertTimeToHour(time) {
+      const timeMap = {
+        '子时': 23, '丑时': 1, '寅时': 3, '卯时': 5,
+        '辰时': 7, '巳时': 9, '午时': 11, '未时': 13,
+        '申时': 15, '酉时': 17, '戌时': 19, '亥时': 21
+      };
+      return timeMap[time] || 11;
+    }
+
+    function handleSubmit() {
+      log('='.repeat(50), 'log');
+      log('🚀 点击提交按钮', 'success');
+      log('='.repeat(50), 'log');
+      
+      // 转换时辰
+      const hour = convertTimeToHour(currentData.time);
+      currentData.hour = hour;
+      
+      log(`📝 收集的数据:`, 'log');
+      log(`   性别: ${currentData.gender}`, 'log');
+      log(`   出生: ${currentData.year}年${currentData.month}月${currentData.day}日`, 'log');
+      log(`   时辰: ${currentData.time} → ${hour}时`, 'log');
+      
+      log('', 'log');
+      log('🔄 时辰转换逻辑:', 'success');
+      log(`   ${currentData.time} → ${hour}小时(24小时制)`, 'log');
+      
+      log('', 'log');
+      log('📡 模拟接口调用:', 'success');
+      
+      // 模拟生成签名
+      const timestamp = Date.now();
+      const mockOpenId = 'test_openid_' + timestamp;
+      
+      const requestData = {
+        openId: mockOpenId,
+        gender: currentData.gender,
+        year: currentData.year,
+        month: currentData.month,
+        day: currentData.day,
+        hour: hour
+      };
+      
+      log(`   URL: http://localhost:8080/api/bazi/analyze`, 'log');
+      log(`   Method: POST`, 'log');
+      log(`   Headers:`, 'log');
+      log(`     Content-Type: application/json`, 'log');
+      log(`     X-Timestamp: ${timestamp}`, 'log');
+      log(`     X-Sign: [MD5签名]`, 'log');
+      log(`   Request Body:`, 'log');
+      log(`     ${JSON.stringify(requestData, null, 6)}`, 'log');
+      
+      log('', 'log');
+      log('✅ 准备跳转到信息展示页...', 'success');
+      
+      // 模拟页面跳转
+      setTimeout(() => {
+        document.getElementById('indexPage').style.display = 'none';
+        document.getElementById('infoPage').classList.add('show');
+        
+        log('', 'log');
+        log('📄 已跳转到信息展示页', 'success');
+        log('⏳ 显示加载状态: "正在分析中..."', 'log');
+        log('', 'log');
+        log('💡 实际运行时会:', 'log');
+        log('   1. 调用真实后端接口', 'log');
+        log('   2. 等待Gemini AI分析', 'log');
+        log('   3. 展示八字和分析结果', 'log');
+        log('', 'log');
+        log('⚠️ 完整测试请在微信开发者工具中进行', 'error');
+      }, 500);
+    }
+
+    // 初始化日志
+    log('✨ 页面预览已加载');
+    log('👉 请点击"照见本心"按钮查看效果');
+  </script>
+</body>
+</html>

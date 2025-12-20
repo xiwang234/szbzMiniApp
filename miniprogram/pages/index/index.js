@@ -29,13 +29,170 @@ Page({
     yearIndex: 64,
     monthIndex: 5,
     dayIndex: 14,
-    timeIndex: 6
+    timeIndex: 6,
+    
+    // 隐私政策弹框控制
+    showPrivacyModal: false,
+    // token状态
+    token: ''
   },
 
   onLoad() {
     this.initYearList()
     this.initMonthList()
     this.initDayList()
+    
+    // 检查token，没有则显示隐私政策弹框
+    this.checkTokenAndShowModal()
+  },
+  
+  onShow() {
+    // 每次显示页面时检查token
+    this.checkTokenAndShowModal()
+  },
+  
+  /**
+   * 检查token并显示弹框
+   */
+  checkTokenAndShowModal() {
+    const token = wx.getStorageSync('token')
+    console.log('[Index] 检查本地token:', token || '未设置')
+    
+    this.setData({ token: token || '' })
+    
+    // 如果没有token，显示隐私政策弹框
+    if (!token) {
+      console.log('[Index] token未设置，显示隐私政策弹框')
+      this.setData({ showPrivacyModal: true })
+    }
+  },
+  
+  /**
+   * 打开隐私政策
+   */
+  openPrivacyPolicy() {
+    wx.showModal({
+      title: '光照吉途小程序隐私政策',
+      content: '这里是隐私政策的详细内容...',
+      showCancel: false,
+      confirmText: '我知道了'
+    })
+  },
+  
+  /**
+   * 打开服务协议
+   */
+  openServiceAgreement() {
+    wx.showModal({
+      title: '光照吉途小程序服务协议',
+      content: '这里是服务协议的详细内容...',
+      showCancel: false,
+      confirmText: '我知道了'
+    })
+  },
+  
+  /**
+   * 拒绝隐私政策
+   */
+  handleRejectPrivacy() {
+    console.log('[Index] 用户拒绝隐私政策，关闭弹框')
+    this.setData({ showPrivacyModal: false })
+  },
+  
+  /**
+   * 同意隐私政策
+   */
+  async handleAgreePrivacy() {
+    console.log('[Index] ========== 用户同意隐私政策 ==========')
+    
+    try {
+      // 显示加载提示
+      wx.showLoading({
+        title: '登录中...',
+        mask: true
+      })
+      
+      // 步骤1: 调用wx.login获取code
+      console.log('[Index] 步骤1: 调用wx.login获取code')
+      const loginRes = await this.wxLogin()
+      const code = loginRes.code
+      console.log('[Index] 获取到code:', code)
+      
+      // 步骤2: 调用后端登录接口
+      console.log('[Index] 步骤2: 调用后端/api/bazi/login接口')
+      const loginResult = await this.callLoginApi(code)
+      console.log('[Index] 后端返回:', loginResult)
+      
+      if (loginResult.code === 200 && loginResult.data && loginResult.data.token) {
+        // 步骤3: 保存token到本地
+        const token = loginResult.data.token
+        wx.setStorageSync('token', token)
+        console.log('[Index] 步骤3: token已保存到本地:', token)
+        
+        // 更新页面状态
+        this.setData({
+          showPrivacyModal: false,
+          token: token
+        })
+        
+        wx.hideLoading()
+        wx.showToast({
+          title: '登录成功',
+          icon: 'success',
+          duration: 1500
+        })
+        
+        console.log('[Index] ========== 登录流程完成 ==========')
+      } else {
+        throw new Error(loginResult.message || '登录失败')
+      }
+      
+    } catch (error) {
+      wx.hideLoading()
+      console.error('[Index] 登录失败:', error)
+      
+      wx.showModal({
+        title: '登录失败',
+        content: error.message || '请稍后重试',
+        showCancel: false
+      })
+    }
+  },
+  
+  /**
+   * 封装wx.login为Promise
+   */
+  wxLogin() {
+    return new Promise((resolve, reject) => {
+      wx.login({
+        success: resolve,
+        fail: reject
+      })
+    })
+  },
+  
+  /**
+   * 调用后端登录接口
+   */
+  callLoginApi(code) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: 'https://cuspidal-voluptuous-walter.ngrok-free.dev/api/bazi/login',
+        method: 'POST',
+        header: {
+          'content-type': 'application/json'
+        },
+        data: { code: code },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            resolve(res.data)
+          } else {
+            reject(new Error('接口返回错误: ' + res.statusCode))
+          }
+        },
+        fail: reject
+      })
+    })
   },
 
   // 初始化年份列表 (1950-2099)
@@ -145,13 +302,78 @@ Page({
     })
   },
 
-  // 提交表单
-  handleSubmit() {
+
+  /**
+   * 提交表单 - 需要token才能提交
+   */
+  async handleSubmit() {
+    console.log('[Index] ========== 点击提交按钮 ==========')
+    
+    // 检查是否有token
+    const token = wx.getStorageSync('token')
+    if (!token) {
+      console.log('[Index] token未设置，显示隐私政策弹框')
+      this.setData({ showPrivacyModal: true })
+      return
+    }
+    
+    console.log('[Index] token已验证:', token)
+    
     const { gender, year, month, day, time } = this.data
     
-    // 直接跳转到信息展示页，传递用户输入的数据
-    wx.navigateTo({
-      url: `/pages/info/info?gender=${gender}&year=${year}&month=${month}&day=${day}&time=${time}`
-    })
+    try {
+      // 转换时辰为小时数
+      const hour = this.convertTimeToHour(time)
+      console.log('[Index] 时辰转换: ' + time + ' → ' + hour + '时')
+      
+      // 跳转到信息展示页，传递用户数据
+      console.log('[Index] 准备跳转到info页面')
+      console.log('[Index] 传递参数: gender=' + gender + 
+                  ', year=' + year + ', month=' + month + ', day=' + day + ', hour=' + hour)
+      
+      wx.navigateTo({
+        url: `/pages/info/info?gender=${gender}&year=${year}&month=${month}&day=${day}&hour=${hour}`,
+        success: () => {
+          console.log('[Index] 页面跳转成功')
+        },
+        fail: (error) => {
+          console.error('[Index] 页面跳转失败:', error)
+          wx.showToast({
+            title: '跳转失败',
+            icon: 'none'
+          })
+        }
+      })
+      
+      console.log('[Index] ========== 提交流程完成 ==========')
+      
+    } catch (error) {
+      console.error('[Index] 提交失败:', error)
+      
+      wx.showModal({
+        title: '提示',
+        content: '操作失败，请重试',
+        showCancel: false
+      })
+    }
+  },
+
+  // 将时辰转换为小时数(取时辰区间的起始小时)
+  convertTimeToHour(time) {
+    const timeMap = {
+      '子时': 23,
+      '丑时': 1,
+      '寅时': 3,
+      '卯时': 5,
+      '辰时': 7,
+      '巳时': 9,
+      '午时': 11,
+      '未时': 13,
+      '申时': 15,
+      '酉时': 17,
+      '戌时': 19,
+      '亥时': 21
+    }
+    return timeMap[time] || 11
   }
 })

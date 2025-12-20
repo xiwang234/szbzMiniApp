@@ -1,4 +1,6 @@
 // pages/info/info.js
+const crypto = require('../../utils/crypto.js')
+
 Page({
   data: {
     // 用户输入的信息
@@ -7,7 +9,7 @@ Page({
       year: '',
       month: '',
       day: '',
-      time: ''
+      hour: ''
     },
     
     // 分析数据
@@ -22,17 +24,22 @@ Page({
   },
 
   onLoad(options) {
+    console.log('[Info] ========== 进入信息页 ==========')
+    console.log('[Info] 接收到的参数:', options)
+    
     // 接收首页传递的参数
     if (options) {
-      this.setData({
-        userInfo: {
-          gender: options.gender || 'male',
-          year: options.year || '2014',
-          month: options.month || '6',
-          day: options.day || '15',
-          time: options.time || '午时'
-        }
-      })
+      const userInfo = {
+        gender: options.gender || 'male',
+        year: parseInt(options.year) || 2014,
+        month: parseInt(options.month) || 6,
+        day: parseInt(options.day) || 15,
+        hour: parseInt(options.hour) || 11
+      }
+      
+      this.setData({ userInfo })
+      
+      console.log('[Info] 用户信息已设置:', userInfo)
     }
     
     // 加载分析数据
@@ -40,95 +47,132 @@ Page({
   },
 
   /**
-   * 加载分析数据（模拟接口调用）
+   * 加载分析数据 - 调用后端API（在header中携带token）
    */
   loadAnalysisData() {
     this.setData({ loading: true, error: '' })
     
-    // 模拟网络请求延迟
-    setTimeout(() => {
-      // 模拟后端返回的数据
-      const mockData = this.generateMockData()
-      
+    const { gender, year, month, day, hour } = this.data.userInfo
+    
+    // 获取本地token
+    const token = wx.getStorageSync('token')
+    if (!token) {
+      console.error('[Info] token未找到，无法调用接口')
       this.setData({
-        analysisData: mockData,
+        error: '登录信息缺失，请返回首页重新登录',
         loading: false
       })
-    }, 1500)
+      return
+    }
     
-    // 真实项目中应该调用后端接口：
-    /*
+    console.log('[Info] ========== 开始调用后端接口 ==========')
+    console.log('[Info] 使用token:', token)
+    
+    // 构造请求参数
+    const requestData = {
+      gender: gender,
+      year: year,
+      month: month,
+      day: day,
+      hour: hour
+    }
+    
+    // 生成时间戳
+    const timestamp = Date.now()
+    
+    // 生成签名
+    const sign = crypto.generateSignature(requestData, timestamp)
+    
+    console.log('[Info] 请求参数:', requestData)
+    console.log('[Info] 时间戳:', timestamp)
+    console.log('[Info] 签名:', sign)
+    
+    // 调用后端接口
     wx.request({
-      url: 'https://your-api.com/analysis',
+      url: 'https://cuspidal-voluptuous-walter.ngrok-free.dev/api/bazi/analyze',
       method: 'POST',
-      data: this.data.userInfo,
+      header: {
+        'content-type': 'application/json',
+        'X-Timestamp': timestamp.toString(),
+        'X-Sign': sign,
+        'Authorization': 'Bearer ' + token  // ✅ 在header中携带token
+      },
+      data: requestData,
       success: (res) => {
-        this.setData({
-          analysisData: res.data,
-          loading: false
-        })
+        console.log('[Info] 接口返回:', res)
+        
+        if (res.statusCode === 200 && res.data.code === 200) {
+          // 解析返回的数据
+          const aiAnalysis = res.data.data.aiAnalysis
+          const baziResult = res.data.data.baziResult
+          
+          console.log('[Info] 八字结果:', baziResult)
+          console.log('[Info] AI分析:', aiAnalysis)
+          
+          // 格式化AI分析结果为展示文本
+          const content = this.formatAnalysisContent(baziResult, aiAnalysis)
+          
+          this.setData({
+            analysisData: { content },
+            loading: false
+          })
+          
+          console.log('[Info] 数据加载成功')
+        } else {
+          console.error('[Info] 接口返回错误:', res.data)
+          this.setData({
+            error: res.data.message || '分析失败，请重试',
+            loading: false
+          })
+        }
       },
       fail: (err) => {
+        console.error('[Info] 接口调用失败:', err)
         this.setData({
-          error: '加载失败，请重试',
+          error: '网络请求失败，请检查后端服务是否启动',
           loading: false
         })
       }
     })
-    */
+    
+    console.log('[Info] ========== 接口请求已发送 ==========')
   },
-
+  
   /**
-   * 生成模拟数据
+   * 格式化AI分析内容
    */
-  generateMockData() {
-    const { gender, year, month, day, time } = this.data.userInfo
+  formatAnalysisContent(baziResult, aiAnalysis) {
+    const { gender, year, month, day, hour } = this.data.userInfo
+    const genderText = gender === 'male' ? '男' : '女'
     
-    // 生成长文本内容
-    const content = `【基本信息】
-性别：${gender === 'male' ? '男' : '女'}
-出生时间：${year}年${month}月${day}日 ${time}
-
-【生辰八字】
-您的生辰八字为：甲午年 庚午月 戊申日 壬午时
-
-【命理分析】
-八字中日主戊土生于午月，正值火旺土燥之时。年柱甲午，木火相生，天干透甲木为正官，地支藏丙火丁火，食神伤官并见。月柱庚午，金火相克，庚金为伤官，但午火克制庚金，伤官受制。日柱戊申，戊土坐申金，申金为食神，为泄秀之地。时柱壬午，水火既济，壬水为正财，午火为印绶。
-
-【五行分析】
-五行属性：木1 火4 土2 金2 水1
-命局五行火旺，需要水来调候，金来泄秀。八字喜金水，忌木火。土为中性。
-
-【性格特征】
-您为人忠厚老实，做事稳重踏实，有责任心。具有很强的包容心和同情心，乐于助人。思维灵活，善于变通，但有时容易优柔寡断。重视传统，尊重长辈，孝顺父母。在工作中认真负责，一丝不苟，深得领导和同事的信任。
-
-【事业运势】
-事业方面，您适合从事稳定性较强的工作，如公务员、教师、会计、金融等行业。工作中踏实肯干，能够得到上级的赏识和提拔。中年以后事业运势逐渐提升，有望担任领导职务。建议把握机会，稳扎稳打，切忌急功近利。
-
-【财运分析】
-财运方面，正财运较旺，工资收入稳定。但偏财运一般，不宜进行高风险投资。建议理性理财，稳健投资，积少成多。中年以后财运逐渐好转，有望积累一定的财富。需要注意的是，不要轻信他人，谨防上当受骗。
-
-【感情婚姻】
-感情运势较为平稳，${gender === 'male' ? '男命' : '女命'}重情重义，对待感情认真负责。早年感情发展较慢，需要耐心等待缘分。中年以后感情运势转好，有望遇到合适的伴侣。婚后夫妻感情和睦，家庭幸福美满。建议多沟通交流，相互理解包容。
-
-【健康状况】
-健康方面需要注意脾胃和心血管系统。由于八字火旺，容易出现上火、口腔溃疡等症状。建议饮食清淡，多吃蔬菜水果，少吃辛辣刺激性食物。适当运动，保持良好的作息习惯。定期体检，预防疾病。
-
-【开运建议】
-1. 吉祥方位：西方、北方
-2. 吉祥颜色：白色、黑色、金色
-3. 幸运数字：4、9、1、6
-4. 适宜职业：金融、会计、教育、公务员
-5. 佩戴饰品：金银首饰、水晶玉石
-
-【总体评价】
-整体来看，您的命局中正印、正官、正财俱全，属于正格命局，为人正直，品行端正。虽然早年运势平平，但中年以后渐入佳境，晚年运势更佳。建议踏实做事，诚信待人，积善行德，定能福寿安康，事业有成。
-
-以上分析仅供参考，详细内容请解锁完整报告查看。`;
+    let content = `【基本信息】\n`
+    content += `性别：${genderText}\n`
+    content += `出生时间：${year}年${month}月${day}日 ${hour}时\n\n`
     
-    return {
-      content: content
+    if (baziResult && baziResult.fourPillars) {
+      content += `【生辰八字】\n`
+      const pillars = baziResult.fourPillars
+      content += `年柱：${pillars.year?.tianGan || ''}${pillars.year?.diZhi || ''}\n`
+      content += `月柱：${pillars.month?.tianGan || ''}${pillars.month?.diZhi || ''}\n`
+      content += `日柱：${pillars.day?.tianGan || ''}${pillars.day?.diZhi || ''}\n`
+      content += `时柱：${pillars.hour?.tianGan || ''}${pillars.hour?.diZhi || ''}\n\n`
     }
+    
+    // 添加AI分析内容
+    if (typeof aiAnalysis === 'string') {
+      content += `【AI智能分析】\n${aiAnalysis}`
+    } else if (typeof aiAnalysis === 'object') {
+      // 如果是JSON对象，尝试解析结构化内容
+      content += `【AI智能分析】\n`
+      if (aiAnalysis.summary) {
+        content += `${aiAnalysis.summary}\n\n`
+      }
+      if (aiAnalysis.details) {
+        content += `${JSON.stringify(aiAnalysis.details, null, 2)}`
+      }
+    }
+    
+    return content
   },
 
   /**

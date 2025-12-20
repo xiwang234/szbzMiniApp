@@ -1,5 +1,26 @@
 <!--pages/index/index.wxml-->
 <view class="page-container">
+  <!-- 隐私政策弹框 -->
+  <view class="privacy-modal" wx:if="{{showPrivacyModal}}">
+    <view class="privacy-mask" bindtap="handleRejectPrivacy"></view>
+    <view class="privacy-content">
+      <view class="privacy-title">温馨提示</view>
+      <view class="privacy-text">
+        <text>欢迎您使用光照吉途。我们将通过</text>
+        <text>《光照吉途小程序隐私政策》、《光照吉途小程序服务协议》</text>
+        <text>帮助您了解我们收集、使用存储和共享个人信息的情况，以及您享受的所有相关权利。详细信息请阅读</text>
+        <text class="privacy-link" bindtap="openPrivacyPolicy">《光照吉途小程序隐私政策》</text>
+        <text>、</text>
+        <text class="privacy-link" bindtap="openServiceAgreement">《光照吉途小程序服务协议》</text>
+        <text>。</text>
+      </view>
+      <view class="privacy-buttons">
+        <button class="privacy-btn agree-btn" bindtap="handleAgreePrivacy">同意</button>
+        <button class="privacy-btn reject-btn" bindtap="handleRejectPrivacy">拒绝</button>
+      </view>
+    </view>
+  </view>
+
   <!-- 表单卡片 -->
   <view class="form-card">
     <!-- 性别选择 -->
