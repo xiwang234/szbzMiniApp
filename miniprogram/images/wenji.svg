@@ -1,0 +1,6 @@
+<svg width="81" height="81" xmlns="http://www.w3.org/2000/svg">
+  <!-- 问吉图标：问号 -->
+  <circle cx="40.5" cy="40.5" r="30" fill="none" stroke="#999999" stroke-width="3"/>
+  <path d="M35 28 Q35 22 40.5 22 Q46 22 46 28 Q46 34 40.5 37 L40.5 45" fill="none" stroke="#999999" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="40.5" cy="53" r="3" fill="#999999"/>
+</svg>

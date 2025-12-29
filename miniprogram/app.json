@@ -1,12 +1,31 @@
 {
   "pages": [
+    "pages/wenji/wenji",
     "pages/index/index",
     "pages/info/info",
+    "pages/wenji-result/wenji-result",
     "pages/payment/payment",
     "pages/result/result"
   ],
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#C8102E",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/wenji/wenji",
+        "text": "问吉"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "吉途"
+      }
+    ]
+  },
   "window": {
-    "navigationBarTitleText": "生辰八字",
+    "navigationBarTitleText": "光照吉途",
     "navigationBarBackgroundColor": "#C8102E",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#FFF5F5"

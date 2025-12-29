@@ -1,0 +1,189 @@
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background: #ffffff;
+  display: flex;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  border-top: 1rpx solid #f0f0f0;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 1000;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx 0;
+  transition: all 0.3s ease;
+}
+
+.tab-icon {
+  width: 50rpx;
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4rpx;
+}
+
+/* 吉途图标 - 向前延伸的道路 */
+.icon-road {
+  width: 48rpx;
+  height: 44rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+/* 道路左侧线条 */
+.road-line-left {
+  position: absolute;
+  left: 8rpx;
+  top: 0;
+  width: 3rpx;
+  height: 44rpx;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    #999999 20%, 
+    #999999 100%);
+  transform: skewX(-10deg);
+  transition: all 0.3s ease;
+}
+
+/* 道路右侧线条 */
+.road-line-right {
+  position: absolute;
+  right: 8rpx;
+  top: 0;
+  width: 3rpx;
+  height: 44rpx;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    #999999 20%, 
+    #999999 100%);
+  transform: skewX(10deg);
+  transition: all 0.3s ease;
+}
+
+/* 地平线/远方 */
+.road-horizon {
+  position: absolute;
+  top: 0;
+  width: 8rpx;
+  height: 8rpx;
+  background: #999999;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.icon-road.active .road-line-left,
+.icon-road.active .road-line-right {
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    #C8102E 20%, 
+    #C8102E 100%);
+}
+
+.icon-road.active .road-horizon {
+  background: #C8102E;
+}
+
+.icon-road.active {
+  transform: scale(1.1);
+}
+
+/* 问吉图标 - 占卜水晶球 */
+.icon-divine {
+  width: 48rpx;
+  height: 48rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+/* 水晶球主体 */
+.divine-circle {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid #999999;
+  border-radius: 50%;
+  position: relative;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, 
+    rgba(153, 153, 153, 0.1) 0%, 
+    transparent 50%);
+}
+
+/* 中间的问号 */
+.divine-question {
+  position: absolute;
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #999999;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+/* 光芒效果 */
+.divine-shine {
+  position: absolute;
+  width: 2rpx;
+  height: 12rpx;
+  background: #999999;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.divine-shine-1 {
+  top: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.divine-shine-2 {
+  bottom: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.icon-divine.active .divine-circle {
+  border-color: #C8102E;
+  background: linear-gradient(135deg, 
+    rgba(200, 16, 46, 0.15) 0%, 
+    transparent 50%);
+}
+
+.icon-divine.active .divine-question {
+  color: #C8102E;
+}
+
+.icon-divine.active .divine-shine {
+  background: #C8102E;
+  opacity: 0.8;
+}
+
+.icon-divine.active {
+  transform: scale(1.1);
+}
+
+.tab-text {
+  font-size: 20rpx;
+  color: #999999;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active .tab-text {
+  color: #C8102E;
+  font-weight: 600;
+  font-size: 22rpx;
+}
+

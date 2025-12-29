@@ -1,0 +1,45 @@
+<!--pages/wenji-result/wenji-result.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在为您占卜...</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view class="error-container" wx:if="{{error}}">
+    <text class="error-icon">⚠️</text>
+    <text class="error-text">{{error}}</text>
+    <button class="retry-btn" bindtap="retryLoad">重新加载</button>
+  </view>
+
+  <!-- 结果内容 -->
+  <view class="result-container" wx:if="{{!loading && !error && resultData}}">
+    <view class="result-header">
+      <text class="result-title">问吉结果</text>
+    </view>
+
+    <view class="result-content">
+      <!-- 用户问题 -->
+      <view class="section">
+        <view class="section-title">您的问题</view>
+        <view class="section-content">{{resultData.question}}</view>
+      </view>
+
+      <!-- 背景信息 -->
+      <view class="section" wx:if="{{resultData.background}}">
+        <view class="section-title">背景描述</view>
+        <view class="section-content">{{resultData.background}}</view>
+      </view>
+
+      <!-- 占卜结果 -->
+      <view class="section">
+        <view class="section-title">占卜结果</view>
+        <view class="section-content analysis-content">{{resultData.analysis}}</view>
+      </view>
+    </view>
+
+    <!-- 返回按钮 -->
+    <button class="back-btn" bindtap="goBack">返回</button>
+  </view>
+</view>

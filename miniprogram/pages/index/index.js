@@ -49,6 +49,13 @@ Page({
   onShow() {
     // 每次显示页面时检查token
     this.checkTokenAndShowModal()
+    
+    // 更新自定义 tabBar 状态
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 1
+      })
+    }
   },
   
   /**

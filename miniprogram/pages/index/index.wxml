@@ -23,6 +23,8 @@
 
   <!-- 表单卡片 -->
   <view class="form-card">
+    <view class="page-title">吉途</view>
+    
     <!-- 性别选择 -->
     <view class="form-item gender-section">
       <view class="form-label">
