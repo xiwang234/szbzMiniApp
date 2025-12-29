@@ -1,45 +1,38 @@
 <!--pages/wenji-result/wenji-result.wxml-->
 <view class="container">
-  <!-- 加载状态 -->
+  <!-- 等待加载动画 -->
   <view class="loading-container" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-    <text class="loading-text">正在为您占卜...</text>
-  </view>
-
-  <!-- 错误提示 -->
-  <view class="error-container" wx:if="{{error}}">
-    <text class="error-icon">⚠️</text>
-    <text class="error-text">{{error}}</text>
-    <button class="retry-btn" bindtap="retryLoad">重新加载</button>
+    <view class="loading-content">
+      <!-- 创意动画效果 -->
+      <view class="mystical-circle">
+        <view class="circle-outer rotating"></view>
+        <view class="circle-middle rotating-reverse"></view>
+        <view class="circle-inner pulsing"></view>
+        <view class="center-dot"></view>
+      </view>
+      
+      <!-- 等待文案 -->
+      <view class="loading-tip fade-in">
+        <text class="tip-text">{{loadingTips[currentTipIndex]}}</text>
+      </view>
+    </view>
   </view>
 
   <!-- 结果内容 -->
-  <view class="result-container" wx:if="{{!loading && !error && resultData}}">
-    <view class="result-header">
-      <text class="result-title">问吉结果</text>
-    </view>
-
-    <view class="result-content">
-      <!-- 用户问题 -->
-      <view class="section">
-        <view class="section-title">您的问题</view>
-        <view class="section-content">{{resultData.question}}</view>
+  <scroll-view class="result-scroll" scroll-y="true" wx:if="{{!loading && resultData}}">
+    <view class="result-container">
+      <view class="result-header">
+        <text class="result-title">分析结果</text>
       </view>
 
-      <!-- 背景信息 -->
-      <view class="section" wx:if="{{resultData.background}}">
-        <view class="section-title">背景描述</view>
-        <view class="section-content">{{resultData.background}}</view>
-      </view>
-
-      <!-- 占卜结果 -->
-      <view class="section">
-        <view class="section-title">占卜结果</view>
-        <view class="section-content analysis-content">{{resultData.analysis}}</view>
+      <view class="result-content">
+        <!-- 分析结果 - 展示 prediction 字段 -->
+        <view class="section result-section">
+          <view class="section-content analysis-content">
+            <text class="analysis-text">{{resultData.prediction || '暂无分析结果'}}</text>
+          </view>
+        </view>
       </view>
     </view>
-
-    <!-- 返回按钮 -->
-    <button class="back-btn" bindtap="goBack">返回</button>
-  </view>
+  </scroll-view>
 </view>

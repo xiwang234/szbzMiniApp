@@ -264,60 +264,33 @@ Page({
     console.log('[Wenji] 年份:', year)
     console.log('[Wenji] 性别:', gender)
     
-    try {
-      wx.showLoading({
-        title: '分析中...',
-        mask: true
-      })
-      
-      // 构造请求参数
-      const requestData = {
-        background: background.trim(),
-        question: question.trim(),
-        year: year,
-        gender: gender
-      }
-      
-      // 生成时间戳和签名
-      const timestamp = Date.now()
-      const sign = crypto.generateSignature(requestData, timestamp)
-      
-      console.log('[Wenji] 请求参数:', requestData)
-      console.log('[Wenji] 时间戳:', timestamp)
-      console.log('[Wenji] 签名:', sign)
-      
-      // 调用后端接口
-      const result = await this.callWenjiApi(requestData, token, timestamp, sign)
-      
-      wx.hideLoading()
-      
-      if (result.code === 200) {
-        console.log('[Wenji] 接口调用成功，跳转到结果页')
-        
-        // 跳转到问吉结果页
-        wx.navigateTo({
-          url: `/pages/wenji-result/wenji-result?data=${encodeURIComponent(JSON.stringify(result.data))}`
-        })
-      } else {
-        wx.showModal({
-          title: '提示',
-          content: result.message || '分析失败，请重试',
-          showCancel: false
-        })
-      }
-      
-      console.log('[Wenji] ========== 提交流程完成 ==========')
-      
-    } catch (error) {
-      wx.hideLoading()
-      console.error('[Wenji] 提交失败:', error)
-      
-      wx.showModal({
-        title: '提示',
-        content: '网络请求失败，请检查后端服务',
-        showCancel: false
-      })
+    // 构造请求参数
+    const requestData = {
+      background: background.trim(),
+      question: question.trim(),
+      birthYear: year,
+      gender: gender
     }
+    
+    // 生成时间戳和签名
+    const timestamp = Date.now()
+    const sign = crypto.generateSignature(requestData, timestamp)
+    
+    // 将参数存储到全局，供结果页使用
+    getApp().globalData = getApp().globalData || {}
+    getApp().globalData.wenjiRequestParams = {
+      requestData,
+      token,
+      timestamp,
+      sign
+    }
+    
+    console.log('[Wenji] 跳转到结果页，参数已存储')
+    
+    // 立即跳转到结果页（让结果页显示等待动画并调用接口）
+    wx.navigateTo({
+      url: '/pages/wenji-result/wenji-result'
+    })
   },
   
   /**
@@ -326,23 +299,28 @@ Page({
   callWenjiApi(data, token, timestamp, sign) {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: 'http://localhost:8080/api/bazi/wenji',
+        url: 'https://cuspidal-voluptuous-walter.ngrok-free.dev/api/bazi/wenji',
         method: 'POST',
         header: {
           'content-type': 'application/json',
-          'Authorization': 'Bearer ' + token,
           'X-Timestamp': timestamp.toString(),
-          'X-Sign': sign
+          'X-Sign': sign,
+          'Authorization': 'Bearer ' + token
         },
         data: data,
         success: (res) => {
+          console.log('[Wenji] 接口响应状态码:', res.statusCode)
+          console.log('[Wenji] 接口响应数据:', res.data)
           if (res.statusCode === 200) {
             resolve(res.data)
           } else {
             reject(new Error('接口返回错误: ' + res.statusCode))
           }
         },
-        fail: reject
+        fail: (err) => {
+          console.error('[Wenji] 接口请求失败:', err)
+          reject(err)
+        }
       })
     })
   }
