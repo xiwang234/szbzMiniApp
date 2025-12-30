@@ -89,7 +89,7 @@ Page({
     
     // 调用后端接口
     wx.request({
-      url: 'https://cuspidal-voluptuous-walter.ngrok-free.dev/api/bazi/analyze',
+      url: 'https://www.xwfxx.top/api/bazi/analyze',
       method: 'POST',
       header: {
         'content-type': 'application/json',

@@ -207,7 +207,7 @@ Page({
   callLoginApi(code) {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: 'http://localhost:8080/api/bazi/login',
+        url: 'https://www.xwfxx.topapi/bazi/login',
         method: 'POST',
         header: {
           'content-type': 'application/json'
@@ -299,7 +299,7 @@ Page({
   callWenjiApi(data, token, timestamp, sign) {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: 'https://cuspidal-voluptuous-walter.ngrok-free.dev/api/bazi/wenji',
+        url: 'https://www.xwfxx.top/api/bazi/wenji',
         method: 'POST',
         header: {
           'content-type': 'application/json',
