@@ -1,53 +1,28 @@
 <!--pages/info/info.wxml-->
-<scroll-view class="info-page" scroll-y="{{true}}">
-  <!-- 信息展示区 -->
-  <view class="info-section">
-    <!-- 加载中 -->
-    <view class="loading-box" wx:if="{{loading}}">
-      <view class="loading-spinner"></view>
-      <text class="loading-text">正在分析中...</text>
-    </view>
-
-    <!-- 加载失败 -->
-    <view class="error-box" wx:elif="{{error}}">
-      <text class="error-icon">⚠️</text>
-      <text class="error-text">{{error}}</text>
-      <button class="retry-btn" bindtap="retryLoad">重新加载</button>
-    </view>
-
-    <!-- 分析结果 - 纯文本 -->
-    <view class="analysis-content" wx:else>
-      <text class="content-text">{{analysisData.content}}</text>
-    </view>
+<view class="info-page">
+  <!-- 加载中 -->
+  <view class="loading-box" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在分析中...</text>
   </view>
 
-  <!-- 付费选择区 -->
-  <view class="payment-section">
-    <view class="section-title">选择套餐</view>
-    
-    <!-- Tab 切换 -->
-    <view class="plan-tabs">
-      <view 
-        class="plan-tab {{selectedPlan === 'year' ? 'active' : ''}}"
-        bindtap="selectPlan"
-        data-plan="year"
-      >
-        <text class="tab-name">一年</text>
-        <text class="tab-price">¥99</text>
+  <!-- 加载失败 -->
+  <view class="error-box" wx:elif="{{error}}">
+    <text class="error-icon">⚠️</text>
+    <text class="error-text">{{error}}</text>
+    <button class="retry-btn" bindtap="retryLoad">重新加载</button>
+  </view>
+
+  <!-- 分析结果 - 支持滚动 -->
+  <scroll-view class="result-scroll" scroll-y="true" wx:else>
+    <view class="result-container">
+      <view class="result-header">
+        <text class="result-title">分析结果</text>
       </view>
-      <view 
-        class="plan-tab {{selectedPlan === 'three-year' ? 'active' : ''}}"
-        bindtap="selectPlan"
-        data-plan="three-year"
-      >
-        <text class="tab-name">三年</text>
-        <text class="tab-price">¥199</text>
+      
+      <view class="analysis-content">
+        <text class="content-text">{{analysisData.content}}</text>
       </view>
     </view>
-
-    <!-- 支付按钮 -->
-    <button class="pay-button" bindtap="handlePayment">
-      立即解锁完整报告
-    </button>
-  </view>
-</scroll-view>
+  </scroll-view>
+</view>

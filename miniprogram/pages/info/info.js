@@ -15,9 +15,6 @@ Page({
     // 分析数据
     analysisData: null,
     
-    // 选中的套餐
-    selectedPlan: 'year',
-    
     // 加载状态
     loading: true,
     error: ''
@@ -173,41 +170,6 @@ Page({
    */
   retryLoad() {
     this.loadAnalysisData()
-  },
-
-  /**
-   * 选择套餐
-   */
-  selectPlan(e) {
-    const plan = e.currentTarget.dataset.plan
-    this.setData({ selectedPlan: plan })
-  },
-
-  /**
-   * 处理支付
-   */
-  handlePayment() {
-    const planInfo = {
-      year: { name: '一年套餐', price: 99 },
-      'three-year': { name: '三年套餐', price: 199 }
-    }
-    
-    const selected = planInfo[this.data.selectedPlan]
-    
-    // 显示确认对话框
-    wx.showModal({
-      title: '确认支付',
-      content: `您选择了${selected.name}，金额：¥${selected.price}元`,
-      confirmText: '确认支付',
-      cancelText: '再看看',
-      success: (res) => {
-        if (res.confirm) {
-          // 跳转到支付页面
-          wx.navigateTo({
-            url: `/pages/payment/payment?plan=${this.data.selectedPlan}&price=${selected.price}&name=${selected.name}`
-          })
-        }
-      }
-    })
   }
 })
+
