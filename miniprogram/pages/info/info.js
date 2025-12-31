@@ -90,6 +90,7 @@ Page({
     // 调用后端接口
     wx.request({
       url: 'https://www.xwfxx.top/api/bazi/analyze',
+      // url: 'https://cuspidal-voluptuous-walter.ngrok-free.dev/api/bazi/analyze',
       method: 'POST',
       header: {
         'content-type': 'application/json',
@@ -148,22 +149,14 @@ Page({
     let content = `【基本信息】\n`
     content += `性别：${genderText}\n`
     content += `出生时间：${year}年${month}月${day}日 ${hour}时\n\n`
-    
-    if (baziResult && baziResult.fourPillars) {
-      content += `【生辰八字】\n`
-      const pillars = baziResult.fourPillars
-      content += `年柱：${pillars.year?.tianGan || ''}${pillars.year?.diZhi || ''}\n`
-      content += `月柱：${pillars.month?.tianGan || ''}${pillars.month?.diZhi || ''}\n`
-      content += `日柱：${pillars.day?.tianGan || ''}${pillars.day?.diZhi || ''}\n`
-      content += `时柱：${pillars.hour?.tianGan || ''}${pillars.hour?.diZhi || ''}\n\n`
-    }
+  
     
     // 添加AI分析内容
     if (typeof aiAnalysis === 'string') {
-      content += `【AI智能分析】\n${aiAnalysis}`
+      content += `【分析结果】\n${aiAnalysis}`
     } else if (typeof aiAnalysis === 'object') {
       // 如果是JSON对象，尝试解析结构化内容
-      content += `【AI智能分析】\n`
+      content += ``
       if (aiAnalysis.summary) {
         content += `${aiAnalysis.summary}\n\n`
       }

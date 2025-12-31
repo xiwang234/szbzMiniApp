@@ -84,6 +84,7 @@ Page({
       const result = await new Promise((resolve, reject) => {
         wx.request({
           url: 'https://www.xwfxx.top/api/bazi/wenji',
+          // url: 'https://cuspidal-voluptuous-walter.ngrok-free.dev/api/bazi/wenji',
           method: 'POST',
           header: {
             'content-type': 'application/json',

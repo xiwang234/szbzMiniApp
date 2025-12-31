@@ -185,6 +185,7 @@ Page({
     return new Promise((resolve, reject) => {
       wx.request({
         url: 'https://www.xwfxx.top/api/bazi/login',
+        // url: 'https://cuspidal-voluptuous-walter.ngrok-free.dev/api/bazi/login',
         method: 'POST',
         header: {
           'content-type': 'application/json'
