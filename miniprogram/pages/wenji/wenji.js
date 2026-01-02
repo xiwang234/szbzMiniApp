@@ -1,5 +1,6 @@
 // pages/wenji/wenji.js
 const crypto = require('../../utils/crypto.js')
+const validator = require('../../utils/validator.js')
 
 Page({
   data: {
@@ -19,8 +20,18 @@ Page({
   },
 
   onLoad() {
+    console.log('[Wenji] ========== 页面加载 onLoad ==========')
     this.initYearList()
     this.checkTokenAndShowModal()
+    
+    console.log('[Wenji] 数据初始化完成，当前data:', {
+      background: this.data.background,
+      question: this.data.question,
+      year: this.data.year,
+      gender: this.data.gender,
+      yearListLength: this.data.yearList.length,
+      showPrivacyModal: this.data.showPrivacyModal
+    })
   },
   
   onShow() {
@@ -61,23 +72,61 @@ Page({
   },
   
   /**
-   * 背景输入
+   * 背景输入 - 仅实时过滤字符
    */
   onBackgroundInput(e) {
     let value = e.detail.value
-    // 移除特殊字符，只保留中英文、数字、常用标点
-    value = value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9，。、；：""''！（）\s]/g, '')
-    this.setData({ background: value })
+    console.log('[Wenji] 背景输入原始值:', value)
+    
+    // 只进行字符类型过滤，不替换敏感词
+    const filtered = validator.filterInput(value, 'background')
+    console.log('[Wenji] 背景输入过滤后:', filtered)
+    
+    this.setData({ background: filtered })
   },
   
   /**
-   * 问题输入
+   * 背景输入失去焦点 - 替换敏感词
+   */
+  onBackgroundBlur(e) {
+    let value = e.detail.value
+    console.log('[Wenji] 背景输入失去焦点，原始值:', value)
+    
+    // 检测并替换敏感词
+    const replacement = validator.replaceSensitiveWords(value)
+    if (replacement.replaced) {
+      console.log('[Wenji] 检测到敏感词，已替换为星号')
+      this.setData({ background: replacement.text })
+    }
+  },
+  
+  /**
+   * 问题输入 - 仅实时过滤字符
    */
   onQuestionInput(e) {
     let value = e.detail.value
-    // 只允许中英文、数字和问号
-    value = value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9？?]/g, '')
-    this.setData({ question: value })
+    console.log('[Wenji] 问题输入原始值:', value)
+    
+    // 只进行字符类型过滤，不替换敏感词
+    const filtered = validator.filterInput(value, 'question')
+    console.log('[Wenji] 问题输入过滤后:', filtered)
+    
+    this.setData({ question: filtered })
+  },
+  
+  /**
+   * 问题输入失去焦点 - 替换敏感词
+   */
+  onQuestionBlur(e) {
+    let value = e.detail.value
+    console.log('[Wenji] 问题输入失去焦点，原始值:', value)
+    
+    // 检测并替换敏感词
+    const replacement = validator.replaceSensitiveWords(value)
+    if (replacement.replaced) {
+      console.log('[Wenji] 检测到敏感词，已替换为星号')
+      this.setData({ question: replacement.text })
+    }
   },
   
   /**
@@ -104,11 +153,8 @@ Page({
    * 打开隐私政策
    */
   openPrivacyPolicy() {
-    wx.showModal({
-      title: '光照吉途小程序隐私政策',
-      content: '这里是隐私政策的详细内容...',
-      showCancel: false,
-      confirmText: '我知道了'
+    wx.navigateTo({
+      url: '/pages/agreement/privacy'
     })
   },
   
@@ -116,20 +162,45 @@ Page({
    * 打开服务协议
    */
   openServiceAgreement() {
-    wx.showModal({
-      title: '光照吉途小程序服务协议',
-      content: '这里是服务协议的详细内容...',
-      showCancel: false,
-      confirmText: '我知道了'
+    wx.navigateTo({
+      url: '/pages/agreement/service'
     })
+  },
+  
+  /**
+   * 阻止触摸穿透
+   */
+  preventTouchMove() {
+    return false
   },
   
   /**
    * 拒绝隐私政策
    */
   handleRejectPrivacy() {
-    console.log('[Wenji] 用户拒绝隐私政策，关闭弹框')
-    this.setData({ showPrivacyModal: false })
+    console.log('[Wenji] 用户拒绝隐私政策，退出小程序')
+    wx.showModal({
+      title: '提示',
+      content: '拒绝隐私政策将无法使用本小程序',
+      confirmText: '退出',
+      cancelText: '重新考虑',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户确认退出
+          wx.navigateBack({
+            fail: () => {
+              // 如果无法返回，提示用户手动关闭
+              wx.showToast({
+                title: '请手动关闭小程序',
+                icon: 'none',
+                duration: 2000
+              })
+            }
+          })
+        }
+        // 如果取消，弹框继续显示，不做任何操作
+      }
+    })
   },
   
   /**
@@ -242,11 +313,12 @@ Page({
     
     const { background, question, year, gender } = this.data
     
-    // 验证必填项
+    // ========== 第一步：基本验证 ==========
     if (!background || background.trim().length === 0) {
       wx.showToast({
         title: '请输入背景描述',
-        icon: 'none'
+        icon: 'none',
+        duration: 2000
       })
       return
     }
@@ -254,24 +326,68 @@ Page({
     if (!question || question.trim().length === 0) {
       wx.showToast({
         title: '请输入咨询问题',
-        icon: 'none'
+        icon: 'none',
+        duration: 2000
       })
       return
     }
     
-    console.log('[Wenji] 表单验证通过')
-    console.log('[Wenji] 背景:', background)
-    console.log('[Wenji] 问题:', question)
+    // ========== 第二步：内容安全验证（敏感词自动替换） ==========
+    console.log('[Wenji] 开始内容安全验证')
+    
+    // 验证背景描述
+    const backgroundValidation = validator.validateInput(background, 'background')
+    if (!backgroundValidation.isValid) {
+      console.warn('[Wenji] 背景描述验证失败:', backgroundValidation.message)
+      wx.showModal({
+        title: '内容不合规',
+        content: `背景描述${backgroundValidation.message}，请修改后重试`,
+        showCancel: false,
+        confirmText: '我知道了'
+      })
+      return
+    }
+    
+    // 验证咨询问题
+    const questionValidation = validator.validateInput(question, 'question')
+    if (!questionValidation.isValid) {
+      console.warn('[Wenji] 咨询问题验证失败:', questionValidation.message)
+      wx.showModal({
+        title: '内容不合规',
+        content: `咨询问题${questionValidation.message}，请修改后重试`,
+        showCancel: false,
+        confirmText: '我知道了'
+      })
+      return
+    }
+    
+    // ========== 第三步：提示用户敏感词已被替换（如果有） ==========
+    if (backgroundValidation.replaced || questionValidation.replaced) {
+      console.log('[Wenji] 检测到敏感词，已自动替换为星号')
+      wx.showToast({
+        title: '已自动过滤敏感词',
+        icon: 'none',
+        duration: 2000
+      })
+      // 等待提示显示后再继续
+      await new Promise(resolve => setTimeout(resolve, 1500))
+    }
+    
+    console.log('[Wenji] 内容安全验证通过')
+    console.log('[Wenji] 背景描述:', backgroundValidation.sanitized)
+    console.log('[Wenji] 咨询问题:', questionValidation.sanitized)
     console.log('[Wenji] 年份:', year)
     console.log('[Wenji] 性别:', gender)
     
-    // 构造请求参数
+    // ========== 第三步：构造请求参数（使用清理后的内容） ==========
     const requestData = {
-      background: background.trim(),
-      question: question.trim(),
+      background: backgroundValidation.sanitized.trim(),
+      question: questionValidation.sanitized.trim(),
       birthYear: year,
       gender: gender
     }
+    
+    console.log('[Wenji] 最终请求数据:', requestData)
     
     // 生成时间戳和签名
     const timestamp = Date.now()

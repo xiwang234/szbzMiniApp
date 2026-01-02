@@ -1,8 +1,8 @@
 <!--pages/index/index.wxml-->
 <view class="page-container">
   <!-- 隐私政策弹框 -->
-  <view class="privacy-modal" wx:if="{{showPrivacyModal}}">
-    <view class="privacy-mask" bindtap="handleRejectPrivacy"></view>
+  <view class="privacy-modal" wx:if="{{showPrivacyModal}}" catchtouchmove="preventTouchMove">
+    <view class="privacy-mask"></view>
     <view class="privacy-content">
       <view class="privacy-title">温馨提示</view>
       <view class="privacy-text">
@@ -16,7 +16,7 @@
       </view>
       <view class="privacy-buttons">
         <button class="privacy-btn agree-btn" bindtap="handleAgreePrivacy">同意</button>
-        <button class="privacy-btn reject-btn" bindtap="handleRejectPrivacy">拒绝</button>
+        <button class="privacy-btn reject-btn" bindtap="handleRejectPrivacy">拒绝并退出</button>
       </view>
     </view>
   </view>

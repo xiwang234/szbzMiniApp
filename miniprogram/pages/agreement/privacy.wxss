@@ -1,0 +1,74 @@
+/* 隐私政策页面样式 */
+.privacy-page {
+  height: 100vh;
+  background: #FFF5F5;
+  box-sizing: border-box;
+}
+
+.agreement-container {
+  padding: 40rpx 30rpx;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+}
+
+/* 协议头部 */
+.agreement-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50rpx;
+  padding-bottom: 30rpx;
+  border-bottom: 2rpx solid #FFE8E8;
+}
+
+.agreement-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #C8102E;
+  margin-bottom: 20rpx;
+  letter-spacing: 2rpx;
+  text-align: center;
+}
+
+.update-date,
+.effective-date {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 协议内容 */
+.agreement-content {
+  background: white;
+  border-radius: 24rpx;
+  padding: 40rpx 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(200, 16, 46, 0.06);
+}
+
+.section {
+  margin-bottom: 50rpx;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 20rpx;
+  border-left: 6rpx solid #C8102E;
+  line-height: 40rpx;
+}
+
+.section-text {
+  display: block;
+  font-size: 28rpx;
+  line-height: 48rpx;
+  color: #666;
+  text-align: justify;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

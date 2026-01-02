@@ -38,9 +38,17 @@ Page({
   },
 
   onLoad() {
+    console.log('[Index] ========== 页面加载 onLoad ==========')
     this.initYearList()
     this.initMonthList()
     this.initDayList()
+    
+    console.log('[Index] 数据初始化完成，当前data:', {
+      gender: this.data.gender,
+      year: this.data.year,
+      yearListLength: this.data.yearList.length,
+      showPrivacyModal: this.data.showPrivacyModal
+    })
     
     // 检查token，没有则显示隐私政策弹框
     this.checkTokenAndShowModal()
@@ -78,11 +86,8 @@ Page({
    * 打开隐私政策
    */
   openPrivacyPolicy() {
-    wx.showModal({
-      title: '光照吉途小程序隐私政策',
-      content: '这里是隐私政策的详细内容...',
-      showCancel: false,
-      confirmText: '我知道了'
+    wx.navigateTo({
+      url: '/pages/agreement/privacy'
     })
   },
   
@@ -90,20 +95,45 @@ Page({
    * 打开服务协议
    */
   openServiceAgreement() {
-    wx.showModal({
-      title: '光照吉途小程序服务协议',
-      content: '这里是服务协议的详细内容...',
-      showCancel: false,
-      confirmText: '我知道了'
+    wx.navigateTo({
+      url: '/pages/agreement/service'
     })
+  },
+  
+  /**
+   * 阻止触摸穿透
+   */
+  preventTouchMove() {
+    return false
   },
   
   /**
    * 拒绝隐私政策
    */
   handleRejectPrivacy() {
-    console.log('[Index] 用户拒绝隐私政策，关闭弹框')
-    this.setData({ showPrivacyModal: false })
+    console.log('[Index] 用户拒绝隐私政策，退出小程序')
+    wx.showModal({
+      title: '提示',
+      content: '拒绝隐私政策将无法使用本小程序',
+      confirmText: '退出',
+      cancelText: '重新考虑',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户确认退出
+          wx.navigateBack({
+            fail: () => {
+              // 如果无法返回，提示用户手动关闭
+              wx.showToast({
+                title: '请手动关闭小程序',
+                icon: 'none',
+                duration: 2000
+              })
+            }
+          })
+        }
+        // 如果取消，弹框继续显示，不做任何操作
+      }
+    })
   },
   
   /**

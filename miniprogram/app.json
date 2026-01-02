@@ -5,7 +5,9 @@
     "pages/info/info",
     "pages/wenji-result/wenji-result",
     "pages/payment/payment",
-    "pages/result/result"
+    "pages/result/result",
+    "pages/agreement/privacy",
+    "pages/agreement/service"
   ],
   "tabBar": {
     "custom": true,
